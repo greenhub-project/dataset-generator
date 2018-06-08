@@ -16,7 +16,7 @@ function run_query {
   TXT_FILE="$TMP_DIR/$TABLE_NAME.txt"
   CSV_FILE="$WORK_DIR/$TABLE_NAME.csv"
   
-  echo "Starting procedure for $TABLE_NAME..."
+  echo -e "\nStarting procedure for $TABLE_NAME...\n"
 
   # Check if old temp file exists, then remove it
   if [ -f $TXT_FILE ]; then
@@ -47,7 +47,10 @@ function run_query {
   echo "Appending contents to csv file..."
   cat $TXT_FILE >> $CSV_FILE 2>&1
 
-  # Remove txt file
+  echo "Compressing to zip file..."
+  zip -ur dataset.zip $CSV_FILE
+
+  # Remove working files
   echo "Cleaning temporary files..."
-  rm $TXT_FILE
+  rm $TXT_FILE $CSV_FILE
 }

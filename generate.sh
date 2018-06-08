@@ -12,7 +12,7 @@ echo "Loading .env file..."
 export_vars
 
 cd $WORK_DIR
-echo -e "Working directory:\n$(pwd)\n"
+echo -e "\nWorking directory:\n$(pwd)"
 
 TABLE_NAME="devices"
 run_query
@@ -44,14 +44,8 @@ run_query
 TABLE_NAME="app_processes"
 run_query
 
-echo "Compressing to zip file..."
-zip -r dataset.zip *.csv
-
 echo "Moving zip file to destination..."
 mv dataset.zip $PUBLIC_PATH
-
-echo "Cleaning all temporary files..."
-rm *.csv
 
 echo "Unsetting .env file..."
 unset_vars
