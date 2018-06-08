@@ -18,6 +18,11 @@ function run_query {
   
   echo -e "\n* Starting procedure for [$TABLE_NAME]\n"
 
+  # Check if single mode is on
+  if [ "$SINGLE_MODE" = true ]; then
+    echo "Executing in single mode..."
+  fi
+
   # Check if old temp file exists, then remove it
   if [ -f $TXT_FILE ]; then
     echo $USER_PASS | sudo -S rm $TXT_FILE
@@ -52,6 +57,13 @@ function run_query {
     echo "Compressing to separate $TABLE_NAME.zip file..."
     zip -r "$TABLE_NAME.zip" $CSV_FILE
     mv "$TABLE_NAME.zip" $PUBLIC_PATH
+  fi
+
+  if [ "$SINGLE_MODE" = true ]; then
+    # Remove working files
+    echo "Cleaning temporary files..."
+    rm $TXT_FILE $CSV_FILE
+    exit 0
   fi
 
   echo "Compressing and appending to dataset.zip file..."

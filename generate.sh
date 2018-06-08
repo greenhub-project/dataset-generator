@@ -18,6 +18,7 @@ echo -e "\nWorking directory:\n$(pwd)"
 
 if grep -Fxq "$1" "tables.conf"
 then
+  SINGLE_MODE=true
   TABLE_NAME="$1"
   run_query "zipped"
 else
@@ -51,10 +52,10 @@ else
   # For now skip app_processes because is too big to handle
   # TABLE_NAME="app_processes"
   # run_query
-fi
 
-echo "Moving zip file to destination..."
-mv dataset.zip $PUBLIC_PATH
+  echo "Moving zip file to destination..."
+  mv dataset.zip $PUBLIC_PATH
+fi
 
 echo "Unsetting .env file..."
 unset_vars
