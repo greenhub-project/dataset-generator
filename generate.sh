@@ -14,8 +14,34 @@ export_vars
 cd $WORK_DIR
 echo -e "Working directory:\n$(pwd)\n"
 
-# Devices
 TABLE_NAME="devices"
+run_query
+
+TABLE_NAME="samples"
+run_query
+
+TABLE_NAME="network_details"
+run_query
+
+TABLE_NAME="battery_details"
+run_query
+
+TABLE_NAME="storage_details"
+run_query
+
+TABLE_NAME="cpu_statuses"
+run_query
+
+TABLE_NAME="settings"
+run_query
+
+TABLE_NAME="location_providers"
+run_query
+
+TABLE_NAME="features"
+run_query
+
+TABLE_NAME="app_processes"
 run_query
 
 echo "Compressing to zip file..."
