@@ -13,12 +13,11 @@ TABLE_NAME="devices"
 run_query
 
 echo "Creating zip file..."
+zip -r dataset.zip *.csv
 
-zip -r dataset.zip ~/dataset/*.csv
-
-mv ~/dataset/dataset.zip $PUBLIC_PATH
+mv dataset.zip $PUBLIC_PATH
 
 echo "Cleaning temporary files..."
-rm ~/dataset/*.csv
+rm *.csv
 
 
