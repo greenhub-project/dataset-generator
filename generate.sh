@@ -8,16 +8,21 @@ fi
 
 . ./src/utils.sh
 
+cd $WORK_DIR
+echo "Working directory:\n$(pwd)"
+
 # Devices
 TABLE_NAME="devices"
 run_query
 
-echo "Creating zip file..."
+echo "Compressing to zip file..."
 zip -r dataset.zip *.csv
 
+echo "Moving zip file to destination..."
 mv dataset.zip $PUBLIC_PATH
 
-echo "Cleaning temporary files..."
+echo "Cleaning all temporary files..."
 rm *.csv
 
-
+echo "Done!"
+cd -
