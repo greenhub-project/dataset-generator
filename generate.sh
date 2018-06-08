@@ -8,8 +8,11 @@ fi
 
 . ./src/utils.sh
 
+echo "Loading .env file..."
+export_vars
+
 cd $WORK_DIR
-echo "Working directory:\n$(pwd)"
+echo -e "Working directory:\n$(pwd)\n"
 
 # Devices
 TABLE_NAME="devices"
@@ -23,6 +26,9 @@ mv dataset.zip $PUBLIC_PATH
 
 echo "Cleaning all temporary files..."
 rm *.csv
+
+echo "Unsetting .env file..."
+unset_vars
 
 echo "Done!"
 cd -
