@@ -18,7 +18,7 @@ echo -e "\nWorking directory:\n$(pwd)"
 
 if grep -Fxq "$1" "tables.conf"
 then
-  echo -e "\n>> Executing in SINGLE MODE\n"
+  echo -e "\n>> Executing in SINGLE MODE"
   SINGLE_MODE=true
   TABLE_NAME="$1"
   run_query "zipped"
