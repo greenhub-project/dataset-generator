@@ -8,6 +8,8 @@ fi
 
 . ./src/utils.sh
 
+START_TIME=$(date +%s)
+
 echo "Loading .env file..."
 export_vars
 
@@ -15,10 +17,10 @@ cd $WORK_DIR
 echo -e "\nWorking directory:\n$(pwd)"
 
 TABLE_NAME="devices"
-run_query
+run_query "zipped"
 
 TABLE_NAME="samples"
-run_query
+run_query "zipped"
 
 TABLE_NAME="network_details"
 run_query
@@ -51,4 +53,9 @@ echo "Unsetting .env file..."
 unset_vars
 
 echo "Done!"
+
+END_TIME=$(date +%s)
+
+echo -e "\nTime elapsed: $((END_TIME-START_TIME))\n"
+
 cd -

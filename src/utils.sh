@@ -14,9 +14,9 @@ function unset_vars {
 function run_query {
   # Set files path
   TXT_FILE="$TMP_DIR/$TABLE_NAME.txt"
-  CSV_FILE="$WORK_DIR/$TABLE_NAME.csv"
+  CSV_FILE="$TABLE_NAME.csv"
   
-  echo -e "\nStarting procedure for $TABLE_NAME...\n"
+  echo -e "\n* Starting procedure for [$TABLE_NAME]...\n"
 
   # Check if old temp file exists, then remove it
   if [ -f $TXT_FILE ]; then
@@ -41,13 +41,20 @@ function run_query {
 
   # Move txt file to working directory
   mv $TXT_FILE $WORK_DIR
-  TXT_FILE="$WORK_DIR/$TABLE_NAME.txt"
+  TXT_FILE="$TABLE_NAME.txt"
 
   # Append contents to csv file
   echo "Appending contents to csv file..."
   cat $TXT_FILE >> $CSV_FILE 2>&1
 
-  echo "Compressing to zip file..."
+  # Create a separate zip file if argument is passed
+  if [ $1 = "zipped" ]; then
+    echo "Compressing to separate $TABLE_NAME.zip file..."
+    zip -r "$TABLE_NAME.zip" $CSV_FILE
+    mv "$TABLE_NAME.zip" $PUBLIC_PATH
+  fi
+
+  echo "Compressing and appending to dataset.zip file..."
   zip -ur dataset.zip $CSV_FILE
 
   # Remove working files
