@@ -58,7 +58,7 @@ function run_query {
     # Remove working files
     echo "Cleaning temporary files..."
     rm $TXT_FILE $CSV_FILE
-    exit 0
+    return 0
   fi
 
   echo "Compressing and appending to dataset.zip file..."
