@@ -21,7 +21,7 @@ $ bash generate.sh
 $ bash generate.sh "app_processes"
 ```
 
-## Configuration
+## Script Configuration
 
 ```bash
 # First, set the table name
