@@ -30,7 +30,7 @@ TABLE_NAME="devices"
 # Calling run_query without args, will only append results to dataset.zip
 run_query
 
-# Adding 'zipped' arg will also create a separate TABLE_NAME.zip file
+# Adding 'zip' arg will also create a separate TABLE_NAME.zip file
 # and append results to dataset.zip
-run_query "zipped"
+run_query "zip"
 ```

@@ -48,7 +48,7 @@ function run_query {
   cat $TXT_FILE >> $CSV_FILE 2>&1
 
   # Create a separate zip file if argument is passed
-  if [ $1 = "zipped" ]; then
+  if [ $1 = "zip" ]; then
     echo "Compressing to separate $TABLE_NAME.zip file..."
     zip -r "$TABLE_NAME.zip" $CSV_FILE
     mv "$TABLE_NAME.zip" $PUBLIC_PATH
@@ -67,4 +67,18 @@ function run_query {
   # Remove working files
   echo "Cleaning temporary files..."
   rm $TXT_FILE $CSV_FILE
+}
+
+# Convert seconds to human readable time
+function display_time {
+  local T=$1
+  local D=$((T/60/60/24))
+  local H=$((T/60/60%24))
+  local M=$((T/60%60))
+  local S=$((T%60))
+  (( $D > 0 )) && printf '%d days ' $D
+  (( $H > 0 )) && printf '%d hours ' $H
+  (( $M > 0 )) && printf '%d minutes ' $M
+  (( $D > 0 || $H > 0 || $M > 0 )) && printf 'and '
+  printf '%d seconds\n' $S
 }

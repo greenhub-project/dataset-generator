@@ -21,13 +21,13 @@ then
   echo -e "\n>> Executing in SINGLE MODE"
   SINGLE_MODE=true
   TABLE_NAME="$1"
-  run_query "zipped"
+  run_query "zip"
 else
   TABLE_NAME="devices"
-  run_query "zipped"
+  run_query "zip"
 
   TABLE_NAME="samples"
-  run_query "zipped"
+  run_query "zip"
 
   TABLE_NAME="network_details"
   run_query
@@ -64,7 +64,8 @@ unset_vars
 echo "Done!"
 
 END_TIME=$(date +%s)
+DIFF_TIME=$((END_TIME-START_TIME))
 
-echo -e "\nTime elapsed: $((END_TIME-START_TIME))s\n"
+echo -e "\nTime elapsed: $(display_time $DIFF_TIME)"
 
 cd -
