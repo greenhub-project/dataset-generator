@@ -65,6 +65,6 @@ echo "Done!"
 
 END_TIME=$(date +%s)
 
-echo -e "\nTime elapsed: $((END_TIME-START_TIME))\n"
+echo -e "\nTime elapsed: $((END_TIME-START_TIME))s\n"
 
 cd -

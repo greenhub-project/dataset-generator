@@ -2,6 +2,14 @@
 
 > Helper scripts to export GreenHub's dataset to .csv files
 
+## Features
+
+- [x] Generate whole dataset to zip format
+- [x] Single mode execution to export just one table
+- [x] Separate zip files for main dataset tables (devices, samples)
+- [x] Time elapsed counter
+- [ ] Script logs
+
 ## Instructions
 
 ```shell
@@ -9,7 +17,7 @@
 $ bash src/init.sh
 # Passing no args, will query all tables
 $ bash generate.sh
-# Passing a 2nd arg, will only query the given table
+# Passing a name arg, will only query the given table
 $ bash generate.sh "app_processes"
 ```
 
