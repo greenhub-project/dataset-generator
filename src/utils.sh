@@ -18,11 +18,6 @@ function run_query {
   
   echo -e "\n* Starting procedure for [$TABLE_NAME]\n"
 
-  # Check if single mode is on
-  if [ "$SINGLE_MODE" = true ]; then
-    echo "Executing in single mode..."
-  fi
-
   # Check if old temp file exists, then remove it
   if [ -f $TXT_FILE ]; then
     echo $USER_PASS | sudo -S rm $TXT_FILE
