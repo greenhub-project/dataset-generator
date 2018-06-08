@@ -5,15 +5,18 @@
 ## Instructions
 
 ```shell
+# First, set your env credentials
 $ bash src/init.sh
-# Before, set your env credentials
+# Passing no args, will query all tables
 $ bash generate.sh
+# Passing a 2nd arg, will only query the given table
+$ bash generate.sh "app_processes"
 ```
 
-## Options
+## Configuration
 
 ```bash
-# First set the table name
+# First, set the table name
 TABLE_NAME="devices"
 
 # Calling run_query without args, will only append results to dataset.zip

@@ -16,35 +16,42 @@ export_vars
 cd $WORK_DIR
 echo -e "\nWorking directory:\n$(pwd)"
 
-TABLE_NAME="devices"
-run_query "zipped"
+if grep -Fxq "$1" "tables.conf"
+then
+  TABLE_NAME="$1"
+  run_query "zipped"
+else
+  TABLE_NAME="devices"
+  run_query "zipped"
 
-TABLE_NAME="samples"
-run_query "zipped"
+  TABLE_NAME="samples"
+  run_query "zipped"
 
-TABLE_NAME="network_details"
-run_query
+  TABLE_NAME="network_details"
+  run_query
 
-TABLE_NAME="battery_details"
-run_query
+  TABLE_NAME="battery_details"
+  run_query
 
-TABLE_NAME="storage_details"
-run_query
+  TABLE_NAME="storage_details"
+  run_query
 
-TABLE_NAME="cpu_statuses"
-run_query
+  TABLE_NAME="cpu_statuses"
+  run_query
 
-TABLE_NAME="settings"
-run_query
+  TABLE_NAME="settings"
+  run_query
 
-TABLE_NAME="location_providers"
-run_query
+  TABLE_NAME="location_providers"
+  run_query
 
-TABLE_NAME="features"
-run_query
+  TABLE_NAME="features"
+  run_query
 
-TABLE_NAME="app_processes"
-run_query
+  # For now skip app_processes because is too big to handle
+  # TABLE_NAME="app_processes"
+  # run_query
+fi
 
 echo "Moving zip file to destination..."
 mv dataset.zip $PUBLIC_PATH

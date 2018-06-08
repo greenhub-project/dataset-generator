@@ -16,7 +16,7 @@ function run_query {
   TXT_FILE="$TMP_DIR/$TABLE_NAME.txt"
   CSV_FILE="$TABLE_NAME.csv"
   
-  echo -e "\n* Starting procedure for [$TABLE_NAME]...\n"
+  echo -e "\n* Starting procedure for [$TABLE_NAME]\n"
 
   # Check if old temp file exists, then remove it
   if [ -f $TXT_FILE ]; then
