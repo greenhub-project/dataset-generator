@@ -26,7 +26,7 @@ function run_query {
   # Query table column names
   echo "Running query for column names..."
   QUERY="SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='$DB_NAME' AND TABLE_NAME='$TABLE_NAME';"
-  mysql -B -N -u$DB_USER -p$DB_PASS $DB_NAME -e "$QUERY" > "$CSV_FILE"
+  mysql -B -N -u$DB_USER -p$DB_PASS $DB_NAME -e "$QUERY" > "$CSV_FILE" 2>/dev/null | grep -v "mysql: [Warning] Using a password on the command line interface can be insecure."
 
   # Transform newline to comma separated values
   echo -e $(sed -n '1h;2,$H;${g;s/\n/,/g;p}' $CSV_FILE) > "$CSV_FILE"
@@ -34,7 +34,7 @@ function run_query {
   # Query table into txt file
   echo "Running query for records..."
   QUERY="SELECT * FROM $TABLE_NAME INTO OUTFILE '$TXT_FILE' FIELDS TERMINATED BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\n';"
-  mysql -u$DB_USER -p$DB_PASS $DB_NAME -e "$QUERY"
+  mysql -u$DB_USER -p$DB_PASS $DB_NAME -e "$QUERY" 2>/dev/null | grep -v "mysql: [Warning] Using a password on the command line interface can be insecure."
 
   # Change ownership of txt file
   echo $USER_PASS | sudo -S chown $USER:$USER $TXT_FILE
@@ -48,7 +48,7 @@ function run_query {
   cat $TXT_FILE >> $CSV_FILE 2>&1
 
   # Create a separate zip file if argument is passed
-  if [ $1 = "zip" ]; then
+  if [ "$1" = "zip" ]; then
     echo "Compressing to separate $TABLE_NAME.zip file..."
     zip -r "$TABLE_NAME.zip" $CSV_FILE
     mv "$TABLE_NAME.zip" $PUBLIC_PATH
