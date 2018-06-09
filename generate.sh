@@ -8,6 +8,8 @@ fi
 
 . ./src/utils.sh
 
+log_message "starting job"
+
 local START_TIME=$(date +%s)
 
 echo "Loading .env file"
