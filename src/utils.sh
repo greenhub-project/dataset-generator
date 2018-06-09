@@ -99,5 +99,5 @@ function display_time {
 # Logs a message to a file
 function log_message {
   local LOG_FILE="dataset-generator.log"
-  echo "[$(date +%x %X)] INFO: $1" >> $LOG_FILE
+  echo "[$(date +"%x %X")] INFO: $1" >> $LOG_FILE
 }

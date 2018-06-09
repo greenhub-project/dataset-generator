@@ -10,7 +10,7 @@ fi
 
 log_message "starting job"
 
-local START_TIME=$(date +%s)
+START_TIME=$(date +%s)
 
 echo "Loading .env file"
 log_message "loading .env file"
@@ -71,8 +71,8 @@ unset_vars
 
 echo "Done!"
 
-local END_TIME=$(date +%s)
-local DIFF_TIME=$((END_TIME-START_TIME))
+END_TIME=$(date +%s)
+DIFF_TIME=$((END_TIME-START_TIME))
 
 echo -e "\nTime elapsed: $(display_time $DIFF_TIME)"
 log_message "time elapsed: $(display_time $DIFF_TIME)"
