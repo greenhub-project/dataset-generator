@@ -10,6 +10,7 @@
 - [x] Time elapsed counter
 - [x] .env file to store credentials
 - [x] Script logs
+- [x] Automatically creates a cronjob to execute
 
 ## Instructions
 
