@@ -1,5 +1,17 @@
 #!/usr/bin/env bash
 
+function copy_env_file {
+  cp .env.example .env
+  echo ".env file copied!"
+  echo "Please set the env credentials..."
+  log_message ".env file copied"
+}
+
+function add_cronjob {
+  (crontab -l && echo "$1 cd $WORK_DIR && bash ./generate.sh") | crontab -
+  log_message "new cronjob created"
+}
+
 # Export all variables from a .env file
 function export_vars {
   export $(egrep -v '^#' .env | xargs)
@@ -99,5 +111,5 @@ function display_time {
 # Logs a message to a file
 function log_message {
   local LOG_FILE="dataset-generator.log"
-  echo "[$(date +"%x %X")] INFO: $1" >> $LOG_FILE
+  echo "[$(date +"%x %X")] INFO: $1" >> "$WORK_DIR/$LOG_FILE"
 }

@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
 
+. ./src/utils.sh
+
 if [ ! -f ".env" ]; then
   echo ".env file not found!"
-  bash ./src/init.sh
+  log_message ".env file not found!"
+  copy_env_file
+  add_cronjob "5 8 * * 0"
   exit 0
 fi
-
-. ./src/utils.sh
 
 log_message "starting job"
 
