@@ -6,7 +6,7 @@ if [ ! -f ".env" ]; then
   echo ".env file not found!"
   log_message ".env file not found!"
   copy_env_file
-  add_cronjob "5 8 * * 0"
+  add_cronjob "0 0 * * 0"
   exit 0
 fi
 
