@@ -8,6 +8,7 @@
 - [x] Single mode execution to export just one table
 - [x] Separate zip files for main dataset tables (devices, samples)
 - [x] Time elapsed counter
+- [x] .env file to store credentials
 - [x] Script logs
 
 ## Instructions
