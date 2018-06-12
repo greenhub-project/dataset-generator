@@ -37,6 +37,8 @@ else
   TABLE_NAME="samples"
   run_query "zip"
 
+  get_last_id
+
   TABLE_NAME="network_details"
   run_query
 

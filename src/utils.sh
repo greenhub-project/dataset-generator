@@ -22,11 +22,18 @@ function unset_vars {
   unset $(grep -v '^#' .env | sed -E 's/(.*)=.*/\1/' | xargs)
 }
 
+# Returns the last ID of samples table
+function get_last_id {
+  local QUERY="SELECT MAX(id) FROM samples"
+  LAST_ID=$(mysql -B -N -u$DB_USER -p$DB_PASS $DB_NAME -e "$QUERY" 2>/dev/null | grep -v "mysql: [Warning] Using a password on the command line interface can be insecure.")
+}
+
 # Routine to query a table into a csv file
 function run_query {
   # Set files path
   local TXT_FILE="$TMP_DIR/$TABLE_NAME.txt"
   local CSV_FILE="$TABLE_NAME.csv"
+  local WHERE_CLAUSE=""
   
   echo -e "\n* Starting routine for [$TABLE_NAME]\n"
   log_message "starting routine for $TABLE_NAME"
@@ -47,10 +54,15 @@ function run_query {
   echo -e $(sed -n '1h;2,$H;${g;s/\n/,/g;p}' $CSV_FILE) > "$CSV_FILE"
   log_message "converting newline to comma separated values"
 
+  if [ -n "$LAST_ID" ]; then
+    log_message "setting where clause, last sample is: $LAST_ID"
+    WHERE_CLAUSE="WHERE sample_id <= $LAST_ID"
+  fi
+
   # Query table into txt file
   echo "Running query for records"
   log_message "running query for records"
-  QUERY="SELECT * FROM $TABLE_NAME INTO OUTFILE '$TXT_FILE' FIELDS TERMINATED BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\n';"
+  QUERY="SELECT * FROM $TABLE_NAME $WHERE_CLAUSE INTO OUTFILE '$TXT_FILE' FIELDS TERMINATED BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\n';"
   mysql -u$DB_USER -p$DB_PASS $DB_NAME -e "$QUERY" 2>/dev/null | grep -v "mysql: [Warning] Using a password on the command line interface can be insecure."
 
   # Change ownership of txt file
