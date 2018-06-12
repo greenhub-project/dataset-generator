@@ -26,6 +26,7 @@ function unset_vars {
 function get_last_id {
   local QUERY="SELECT MAX(id) FROM samples"
   LAST_ID=$(mysql -B -N -u$DB_USER -p$DB_PASS $DB_NAME -e "$QUERY" 2>/dev/null | grep -v "mysql: [Warning] Using a password on the command line interface can be insecure.")
+  log_message "last ID set to = $LAST_ID"
 }
 
 # Routine to query a table into a csv file
@@ -40,8 +41,8 @@ function run_query {
 
   # Check if old temp file exists, then remove it
   if [ -f $TXT_FILE ]; then
-    echo $USER_PASS | sudo -S rm $TXT_FILE
     log_message "removing preexisting temp file - $TXT_FILE"
+    echo $USER_PASS | sudo -S rm $TXT_FILE
   fi
 
   # Query table column names
@@ -51,11 +52,11 @@ function run_query {
   mysql -B -N -u$DB_USER -p$DB_PASS $DB_NAME -e "$QUERY" > "$CSV_FILE" 2>/dev/null | grep -v "mysql: [Warning] Using a password on the command line interface can be insecure."
 
   # Transform newline to comma separated values
-  echo -e $(sed -n '1h;2,$H;${g;s/\n/,/g;p}' $CSV_FILE) > "$CSV_FILE"
   log_message "converting newline to comma separated values"
+  echo -e $(sed -n '1h;2,$H;${g;s/\n/,/g;p}' $CSV_FILE) > "$CSV_FILE"
 
   if [ -n "$LAST_ID" ]; then
-    log_message "setting where clause, last sample is: $LAST_ID"
+    log_message "setting where clause"
     if [ "$TABLE_NAME" = "samples" ]; then
       WHERE_CLAUSE="WHERE id <= $LAST_ID"
     else
@@ -66,18 +67,17 @@ function run_query {
   # Query table into txt file
   echo "Running query for records"
   log_message "running query for records"
-  log_message "query: SELECT * FROM $TABLE_NAME $WHERE_CLAUSE"
   QUERY="SELECT * FROM $TABLE_NAME $WHERE_CLAUSE INTO OUTFILE '$TXT_FILE' FIELDS TERMINATED BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\n';"
   mysql -u$DB_USER -p$DB_PASS $DB_NAME -e "$QUERY" 2>/dev/null | grep -v "mysql: [Warning] Using a password on the command line interface can be insecure."
 
   # Change ownership of txt file
-  echo $USER_PASS | sudo -S chown $USER:$USER $TXT_FILE
   log_message "changing ownership of $TXT_FILE"
+  echo $USER_PASS | sudo -S chown $USER:$USER $TXT_FILE
 
   # Move txt file to working directory
+  log_message "moving $TXT_FILE to working directory"
   mv $TXT_FILE $WORK_DIR
   TXT_FILE="$TABLE_NAME.txt"
-  log_message "moving $TXT_FILE to working directory"
 
   # Append contents to csv file
   echo "Appending contents to csv file"
