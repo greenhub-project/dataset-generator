@@ -56,12 +56,17 @@ function run_query {
 
   if [ -n "$LAST_ID" ]; then
     log_message "setting where clause, last sample is: $LAST_ID"
-    WHERE_CLAUSE="WHERE sample_id <= $LAST_ID"
+    if [ "$TABLE_NAME" = "samples" ]; then
+      WHERE_CLAUSE="WHERE id <= $LAST_ID"
+    else
+      WHERE_CLAUSE="WHERE sample_id <= $LAST_ID"
+    fi
   fi
 
   # Query table into txt file
   echo "Running query for records"
   log_message "running query for records"
+  log_message "query: SELECT * FROM $TABLE_NAME $WHERE_CLAUSE"
   QUERY="SELECT * FROM $TABLE_NAME $WHERE_CLAUSE INTO OUTFILE '$TXT_FILE' FIELDS TERMINATED BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\n';"
   mysql -u$DB_USER -p$DB_PASS $DB_NAME -e "$QUERY" 2>/dev/null | grep -v "mysql: [Warning] Using a password on the command line interface can be insecure."
 
