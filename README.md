@@ -22,6 +22,8 @@ $ bash src/init.sh
 $ bash generate.sh
 # Passing a name arg, will only query the given table
 $ bash generate.sh "app_processes"
+# Export database schema
+$ bash schema.sh
 ```
 
 ## Script Configuration

@@ -29,6 +29,7 @@ function get_last_id {
   log_message "last ID set to = $LAST_ID"
 }
 
+# Exports database schema to a .sql file
 function export_schema {
   local SCHEMA_FILE="schema.sql"
   echo "Exporting database schema"
