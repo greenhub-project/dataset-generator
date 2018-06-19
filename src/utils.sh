@@ -29,6 +29,15 @@ function get_last_id {
   log_message "last ID set to = $LAST_ID"
 }
 
+function export_schema {
+  local SCHEMA_FILE="$DB_NAME.sql"
+  echo "Exporting database schema"
+  log_message "exporting database schema"
+  mysqldump -u$DB_USER -p$DB_PASS --no-data $DB_NAME > "$SCHEMA_FILE" 2>/dev/null | grep -v "mysql: [Warning] Using a password on the command line interface can be insecure."
+  log_message "moving $SCHEMA_FILE to public path"
+  mv "$SCHEMA_FILE" "$PUBLIC_PATH"
+}
+
 # Routine to query a table into a csv file
 function run_query {
   # Set files path
