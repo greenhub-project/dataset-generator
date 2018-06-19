@@ -30,7 +30,7 @@ function get_last_id {
 }
 
 function export_schema {
-  local SCHEMA_FILE="$DB_NAME.sql"
+  local SCHEMA_FILE="schema.sql"
   echo "Exporting database schema"
   log_message "exporting database schema"
   mysqldump -u$DB_USER -p$DB_PASS --no-data $DB_NAME > "$SCHEMA_FILE" 2>/dev/null | grep -v "mysql: [Warning] Using a password on the command line interface can be insecure."
