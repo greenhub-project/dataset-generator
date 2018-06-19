@@ -11,6 +11,7 @@
 - [x] .env file to store credentials
 - [x] Script logs
 - [x] Automatically creates a cronjob to execute
+- [x] Exports database schema
 
 ## Instructions
 
