@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+  dataset-generator:
+    image: dataset-generator
+    build:
+      context: .
+      dockerfile: Dockerfile
