@@ -56,10 +56,6 @@ else
   # For now skip app_processes because is too big to handle
   # TABLE_NAME="app_processes"
   # run_query
-
-  echo "Moving zip file to destination"
-  log_message "moving dataset.zip to public path"
-  mv dataset.zip $PUBLIC_PATH
 fi
 
 echo "Unsetting .env file"

@@ -1,14 +1,8 @@
 #!/usr/bin/env sh
 
-. ./src/utils.sh
-
-echo "Loading .env file"
-export_vars
+PUBLIC_DIR=${1:-data/}
 
 mkdir -p data
-docker run --rm -it -v "$PWD/data":/app/data dataset-generator sh -c "./generate.sh 'devices'"
+docker run --rm -it -v "$PWD/data":/app/data dataset-generator sh -c "./src/generate.sh 'devices'"
 
-echo "Unsetting .env file"
-unset_vars
-
-echo "Done!"
+mv data/*.zip $PUBLIC_DIR

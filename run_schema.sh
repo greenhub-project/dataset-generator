@@ -1,18 +1,8 @@
 #!/usr/bin/env sh
 
-. ./src/utils.sh
-
-echo "Loading .env file"
-export_vars
+PUBLIC_DIR=${1:-data/}
 
 mkdir -p data
-docker run --rm -it -v "$PWD/data":/app/data dataset-generator sh -c "./schema.sh"
+docker run --rm -it -v "$PWD/data":/app/data dataset-generator sh -c "./src/schema.sh"
 
-echo "Unsetting .env file"
-unset_vars
-
-echo "moving schema.sql to public path"
-
-# mv "$WORK_DIR/schema.sql" $PUBLIC_PATH
-
-echo "Done!"
+mv data/schema.sql $PUBLIC_DIR

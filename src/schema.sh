@@ -11,16 +11,16 @@ fi
 
 log_message "starting job"
 
-echo "[DOCKER] Loading .env file"
+echo "Loading .env file"
 log_message "loading .env file"
 export_vars
 
 export_schema
 
-echo "[DOCKER] Unsetting .env file"
+echo "Unsetting .env file"
 log_message "unsetting .env file variables"
 unset_vars
 
-echo "[DOCKER] Done!"
+echo "Done!"
 
 log_message "job done!"
