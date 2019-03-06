@@ -64,8 +64,10 @@ function run_query {
   TOTAL=$(mysql -B -N -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD -P$DB_PORT $DB_DATABASE -e "SELECT COUNT(*) FROM $TABLE_NAME $WHERE_CLAUSE")
   TOTAL=$((TOTAL/BAG))
   echo "Total of pages: $TOTAL"
+  log_message "total number of pages: $TOTAL"
   while [ "$x" -le "$TOTAL" ]
   do
+    log_message "processing page ($x/$TOTAL)"
     mysql -B -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD -P$DB_PORT $DB_DATABASE \
     -e "SELECT * FROM $TABLE_NAME $WHERE_CLAUSE LIMIT $PAGE, $BAG" | tr '\t' ',' >> "$CSV_FILE"
     PAGE=$((PAGE+BAG))
