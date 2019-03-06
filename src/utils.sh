@@ -42,7 +42,7 @@ function run_query {
   # Set files path
   local WHERE_CLAUSE=""
   local CSV_FILE="$WORK_DIR/$TABLE_NAME.csv"
-  local BAG=10000
+  local BAG=50000
   local PAGE=0
   local x=1
   
@@ -67,7 +67,7 @@ function run_query {
   log_message "total number of pages: $TOTAL"
   while [ "$x" -le "$TOTAL" ]
   do
-    log_message "processing page ($x/$TOTAL)"
+    log_message "<$TABLE_NAME> processing page ($x/$TOTAL)"
     mysql -B -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD -P$DB_PORT $DB_DATABASE \
     -e "SELECT * FROM $TABLE_NAME $WHERE_CLAUSE LIMIT $PAGE, $BAG" | tr '\t' ',' >> "$CSV_FILE"
     PAGE=$((PAGE+BAG))
