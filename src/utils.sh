@@ -67,6 +67,7 @@ function run_query {
   log_message "total number of pages: $TOTAL"
   while [ "$x" -le "$TOTAL" ]
   do
+    echo "<$TABLE_NAME> processing page ($x/$TOTAL)"
     log_message "<$TABLE_NAME> processing page ($x/$TOTAL)"
     mysql -B -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD -P$DB_PORT --protocol=tcp $DB_DATABASE \
     -e "SELECT * FROM $TABLE_NAME $WHERE_CLAUSE LIMIT $PAGE, $BAG" | tr '\t' ',' >> "$CSV_FILE"
