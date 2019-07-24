@@ -25,7 +25,7 @@ function unset_vars {
 # Returns the last ID of samples table
 function get_last_id {
   local QUERY="SELECT MAX(id) FROM samples"
-  LAST_ID=$(mysql -B -N -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD -P$DB_PORT $DB_DATABASE -e "$QUERY")
+  LAST_ID=$(mysql -B -N -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD -P$DB_PORT --protocol=tcp $DB_DATABASE -e "$QUERY")
   log_message "last ID set to = $LAST_ID"
 }
 
@@ -34,7 +34,7 @@ function export_schema {
   local SCHEMA_FILE="$WORK_DIR/schema.sql"
   echo "Exporting database schema"
   log_message "exporting database schema"
-  mysqldump -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD -P$DB_PORT --no-data $DB_DATABASE > "$SCHEMA_FILE"
+  mysqldump -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD -P$DB_PORT --protocol=tcp --no-data $DB_DATABASE > "$SCHEMA_FILE"
 }
 
 # Routine to query a table into a csv file
@@ -61,14 +61,14 @@ function run_query {
   # Query table into txt file
   echo "Running query for records"
   log_message "running query for records"
-  TOTAL=$(mysql -B -N -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD -P$DB_PORT $DB_DATABASE -e "SELECT COUNT(*) FROM $TABLE_NAME $WHERE_CLAUSE")
+  TOTAL=$(mysql -B -N -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD -P$DB_PORT --protocol=tcp $DB_DATABASE -e "SELECT COUNT(*) FROM $TABLE_NAME $WHERE_CLAUSE")
   TOTAL=$((TOTAL/BAG))
   echo "Total of pages: $TOTAL"
   log_message "total number of pages: $TOTAL"
   while [ "$x" -le "$TOTAL" ]
   do
     log_message "<$TABLE_NAME> processing page ($x/$TOTAL)"
-    mysql -B -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD -P$DB_PORT $DB_DATABASE \
+    mysql -B -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD -P$DB_PORT --protocol=tcp $DB_DATABASE \
     -e "SELECT * FROM $TABLE_NAME $WHERE_CLAUSE LIMIT $PAGE, $BAG" | tr '\t' ',' >> "$CSV_FILE"
     PAGE=$((PAGE+BAG))
     x=$((x+1))
