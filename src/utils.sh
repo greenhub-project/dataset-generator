@@ -25,7 +25,7 @@ function unset_vars {
 # Returns the last ID of samples table
 function get_last_id {
   local QUERY="SELECT MAX(id) FROM samples"
-  LAST_ID=$(mysql -B -N -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD -P$DB_PORT --protocol=tcp $DB_DATABASE -e "$QUERY")
+  LAST_ID=$(mysql -B -N -q --protocol=tcp -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD -P$DB_PORT $DB_DATABASE -e "$QUERY")
   log_message "last ID set to = $LAST_ID"
 }
 
@@ -42,7 +42,8 @@ function run_query {
   # Set files path
   local WHERE_CLAUSE=""
   local CSV_FILE="$WORK_DIR/$TABLE_NAME.csv"
-  local BAG=50000
+  local CSV_REGEX="$WORK_DIR/$TABLE_NAME.*.csv"
+  local BAG=100000
   local PAGE=0
   local x=1
   
@@ -61,19 +62,27 @@ function run_query {
   # Query table into txt file
   echo "Running query for records"
   log_message "running query for records"
-  TOTAL=$(mysql -B -N -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD -P$DB_PORT --protocol=tcp $DB_DATABASE -e "SELECT COUNT(*) FROM $TABLE_NAME $WHERE_CLAUSE")
+
+  TOTAL=$(mysql -B -N -q --protocol=tcp -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD -P$DB_PORT $DB_DATABASE -e "SELECT COUNT(*) FROM $TABLE_NAME $WHERE_CLAUSE")
   TOTAL=$((TOTAL/BAG))
   echo "Total of pages: $TOTAL"
   log_message "total number of pages: $TOTAL"
+
   while [ "$x" -le "$TOTAL" ]
   do
     echo "<$TABLE_NAME> processing page ($x/$TOTAL)"
     log_message "<$TABLE_NAME> processing page ($x/$TOTAL)"
-    mysql -B -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD -P$DB_PORT --protocol=tcp $DB_DATABASE \
-    -e "SELECT * FROM $TABLE_NAME $WHERE_CLAUSE LIMIT $PAGE, $BAG" | tr '\t' ',' >> "$CSV_FILE"
+    mysql -B -q --protocol=tcp -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD -P$DB_PORT $DB_DATABASE \
+    -e "SELECT * FROM $TABLE_NAME $WHERE_CLAUSE LIMIT $PAGE, $BAG" \
+    | tr '\t' ',' > "$WORK_DIR/$TABLE_NAME.$x.csv"
     PAGE=$((PAGE+BAG))
     x=$((x+1))
   done
+
+  # Merge text part files into single text file
+  echo "Merging temporary files"
+  log_message "merging temporary files"
+  cat $(ls $CSV_REGEX) > "$CSV_FILE" && rm $(ls $CSV_REGEX)
 
   # Create a separate zip file if argument is passed
   if [ "$1" = "zip" ]; then

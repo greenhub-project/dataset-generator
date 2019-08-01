@@ -47,15 +47,8 @@ else
   TABLE_NAME="settings"
   run_query
 
-  TABLE_NAME="location_providers"
+  TABLE_NAME="app_processes"
   run_query
-
-  TABLE_NAME="features"
-  run_query
-
-  # For now skip app_processes because is too big to handle
-  # TABLE_NAME="app_processes"
-  # run_query
 fi
 
 echo "Unsetting .env file"
