@@ -63,7 +63,7 @@ function run_query {
   echo "Running query for records"
   log_message "running query for records"
 
-  TOTAL=$(mysql -B -N --protocol=tcp -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD -P$DB_PORT $DB_DATABASE -e "SELECT COUNT(*) FROM $TABLE_NAME $WHERE_CLAUSE")
+  TOTAL=$(mysql -B -N -q --protocol=tcp -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD -P$DB_PORT $DB_DATABASE -e "SELECT COUNT(*) FROM $TABLE_NAME $WHERE_CLAUSE")
   TOTAL=$((TOTAL/BAG+1))
 
   echo "Total of pages: $TOTAL"
