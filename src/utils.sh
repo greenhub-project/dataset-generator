@@ -25,7 +25,7 @@ function unset_vars {
 # Returns the last ID of samples table
 function get_last_id {
   local QUERY="SELECT MAX(id) FROM samples"
-  LAST_ID=$(mysql -B -N -q --protocol=tcp -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD -P$DB_PORT $DB_DATABASE -e "$QUERY")
+  LAST_ID=$(mysql -B -N --protocol=tcp -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD -P$DB_PORT $DB_DATABASE -e "$QUERY")
   log_message "last ID set to = $LAST_ID"
 }
 
@@ -63,8 +63,9 @@ function run_query {
   echo "Running query for records"
   log_message "running query for records"
 
-  TOTAL=$(mysql -B -N -q --protocol=tcp -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD -P$DB_PORT $DB_DATABASE -e "SELECT COUNT(*) FROM $TABLE_NAME $WHERE_CLAUSE")
-  TOTAL=$((TOTAL/BAG))
+  TOTAL=$(mysql -B -N --protocol=tcp -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD -P$DB_PORT $DB_DATABASE -e "SELECT COUNT(*) FROM $TABLE_NAME $WHERE_CLAUSE")
+  TOTAL=$((TOTAL/BAG+1))
+
   echo "Total of pages: $TOTAL"
   log_message "total number of pages: $TOTAL"
 
