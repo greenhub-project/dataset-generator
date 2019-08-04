@@ -31,10 +31,11 @@ function get_last_id {
 
 # Exports database schema to a .sql file
 function export_schema {
-  local SCHEMA_FILE="$WORK_DIR/schema.sql"
+  local SCHEMA_FILE="$WORK_DIR/schema.sql.gz"
   echo "Exporting database schema"
   log_message "exporting database schema"
-  mysqldump -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD -P$DB_PORT --protocol=tcp --no-data $DB_DATABASE > "$SCHEMA_FILE"
+  mysqldump --protocol=tcp --no-data -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD \
+  -P$DB_PORT  $DB_DATABASE > "$SCHEMA_FILE"
 }
 
 # Routine to query a table into a csv file
@@ -43,7 +44,6 @@ function run_query {
   local WHERE_CLAUSE=""
   local CSV_FILE="$WORK_DIR/$TABLE_NAME.csv"
   local CSV_REGEX="$WORK_DIR/$TABLE_NAME.*.csv"
-  local BAG=100000
   local PAGE=0
   local x=1
   
@@ -87,27 +87,21 @@ function run_query {
 
   # Create a separate zip file if argument is passed
   if [ "$1" = "zip" ]; then
-    echo "Compressing to separate $TABLE_NAME.zip file"
-    log_message "compressing to separate $TABLE_NAME.zip file"
-    zip -rj "$WORK_DIR/$TABLE_NAME.zip" "$CSV_FILE"
+    echo "Compressing to separate $TABLE_NAME.7z file"
+    log_message "compressing to separate $TABLE_NAME.7z file"
+    # zip -rj "$WORK_DIR/$TABLE_NAME.zip" "$CSV_FILE"
+    7z a -t7z -sdel -m0=LZMA2:d64k:fb32 -ms=8m -mmt=30 -mx=1 -- "$WORK_DIR/$TABLE_NAME.7z" "$CSV_FILE"
   fi
 
   if [ "$SINGLE_MODE" = true ]; then
     # Remove working files
-    echo "Cleaning temporary files"
-    log_message "cleaning temporary files"
-    rm "$CSV_FILE"
     return 0
   fi
 
-  echo "Compressing and appending to dataset.zip file"
-  log_message "appending $CSV_FILE to dataset.zip file"
-  zip -urj "$WORK_DIR/dataset.zip" "$CSV_FILE"
-
-  # Remove working files
-  echo "Cleaning temporary files"
-  log_message "cleaning temporary files"
-  rm "$CSV_FILE"
+  echo "Compressing and appending to dataset.7z file"
+  log_message "appending $CSV_FILE to dataset.7z file"
+  # zip -urj "$WORK_DIR/dataset.zip" "$CSV_FILE"
+  7z a -t7z -sdel -m0=LZMA2:d64k:fb32 -ms=8m -mmt=30 -mx=1 -- "$WORK_DIR/dataset.7z" "$CSV_FILE"
 }
 
 # Logs a message to a file

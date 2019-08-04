@@ -1,7 +1,7 @@
 FROM alpine:3.6
 
 RUN apk add --no-cache --virtual mysql-client
-RUN apk add --no-cache --virtual zip
+RUN apk add --no-cache --virtual p7zip
 
 # Set the working directory to /app
 WORKDIR /app
