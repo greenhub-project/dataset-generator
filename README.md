@@ -17,6 +17,8 @@
 ## Instructions
 
 ```shell
+# First build the custom docker image
+$ bash scripts/run_build.sh
 # Export all tables
 $ bash scripts/run_generate.sh
 # If you want to run only for a single table, change the script as following:
