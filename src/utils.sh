@@ -95,7 +95,7 @@ function run_query {
 
   if [ "$SINGLE_MODE" = true ]; then
     # Remove working files
-    rm $CSV_REGEX
+    rm $CSV_FILE
     return 0
   fi
 
