@@ -90,11 +90,12 @@ function run_query {
     echo "Compressing to separate $TABLE_NAME.7z file"
     log_message "compressing to separate $TABLE_NAME.7z file"
     # zip -rj "$WORK_DIR/$TABLE_NAME.zip" "$CSV_FILE"
-    7z a -t7z -sdel -m0=LZMA2:d64k:fb32 -ms=8m -mmt=30 -mx=1 -- "$WORK_DIR/$TABLE_NAME.7z" "$CSV_FILE"
+    7z a -t7z -m0=LZMA2:d64k:fb32 -ms=8m -mmt=30 -mx=1 -- "$WORK_DIR/$TABLE_NAME.7z" "$CSV_FILE"
   fi
 
   if [ "$SINGLE_MODE" = true ]; then
     # Remove working files
+    rm $CSV_REGEX
     return 0
   fi
 
