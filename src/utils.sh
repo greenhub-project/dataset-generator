@@ -41,7 +41,8 @@ function export_schema {
 # Routine to query a table into a csv file
 function run_query {
   # Set files path
-  local SEARCH_KEY=""
+  local SEARCH_KEY="id"
+  local WHERE_CLAUSE=""
   local CSV_FILE="$WORK_DIR/$TABLE_NAME.csv"
   local CSV_REGEX="$WORK_DIR/$TABLE_NAME.*.csv"
   local LOWER_BOUND=1
@@ -53,36 +54,37 @@ function run_query {
 
   if [ -n "$LAST_ID" ]; then
     log_message "setting where clause"
-    if [ "$TABLE_NAME" = "samples" ]; then
-      SEARCH_KEY="id"
-    else
+    if [ "$TABLE_NAME" != "samples" ]; then
       SEARCH_KEY="sample_id"
     fi
+    WHERE_CLAUSE="WHERE $SEARCH_KEY <= $LAST_ID"
   fi
 
-  # Query table into txt file
-  echo "Running query for records"
-  log_message "running query for records"
+  TOTAL=$(mysql -B -N -q --protocol=tcp -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD -P$DB_PORT $DB_DATABASE -e "SELECT COUNT(*) FROM $TABLE_NAME $WHERE_CLAUSE")
 
-  local WHERE_CLAUSE="SELECT COUNT(*) FROM $TABLE_NAME WHERE $SEARCH_KEY <= $LAST_ID"
+  echo "Total of records: $TOTAL"
+  log_message "total of records: $TOTAL"
 
-  TOTAL=$(mysql -B -N -q --protocol=tcp -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD -P$DB_PORT $DB_DATABASE -e "$WHERE_CLAUSE")
   TOTAL=$((TOTAL/BAG+1))
 
   echo "Total of pages: $TOTAL"
   log_message "total number of pages: $TOTAL"
 
+  # Query table into txt file
+  echo "Running query for records"
+  log_message "running query for records"
+
   while [ "$x" -le "$TOTAL" ]
-  do
-    echo "<$TABLE_NAME> processing page ($x/$TOTAL)"
-    log_message "<$TABLE_NAME> processing page ($x/$TOTAL)"
-    mysql -B -q --protocol=tcp -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD -P$DB_PORT $DB_DATABASE \
-    -e "SELECT * FROM $TABLE_NAME WHERE $SEARCH_KEY BETWEEN $LOWER_BOUND AND $UPPER_BOUND" \
-    | tr '\t' ',' > "$WORK_DIR/$TABLE_NAME.$x.csv"
-    LOWER_BOUND=$((LOWER_BOUND+BAG))
-    UPPER_BOUND=$((UPPER_BOUND+BAG))
-    x=$((x+1))
-  done
+    do
+      echo "<$TABLE_NAME> processing page ($x/$TOTAL)"
+      log_message "<$TABLE_NAME> processing page ($x/$TOTAL)"
+      mysql -B -q --protocol=tcp -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD -P$DB_PORT $DB_DATABASE \
+      -e "SELECT * FROM $TABLE_NAME WHERE $SEARCH_KEY BETWEEN $LOWER_BOUND AND $UPPER_BOUND" \
+      | tr '\t' ',' > "$WORK_DIR/$TABLE_NAME.$x.csv"
+      LOWER_BOUND=$((LOWER_BOUND+BAG))
+      UPPER_BOUND=$((UPPER_BOUND+BAG))
+      x=$((x+1))
+    done
 
   # Merge text part files into single text file
   echo "Merging temporary files"
@@ -99,6 +101,8 @@ function run_query {
 
   if [ "$SINGLE_MODE" = true ]; then
     # Remove working files
+    echo "Removing temporary files"
+    log_message "removing tempory files"
     rm $CSV_FILE
     return 0
   fi

@@ -7,6 +7,3 @@ RUN apk add --no-cache --virtual p7zip
 WORKDIR /app
 
 RUN mkdir -p /app/data
-
-# Copy the current directory contents into the container at /app
-COPY . /app

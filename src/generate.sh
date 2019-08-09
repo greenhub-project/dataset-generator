@@ -9,11 +9,15 @@ if [ ! -f ".env" ]; then
   exit 0
 fi
 
+export_vars
+
 log_message "starting job"
 
 echo "Loading .env file"
 log_message "loading .env file"
-export_vars
+
+echo "Bag size set to = $BAG"
+log_message "bag size set to = $BAG"
 
 if grep -Fxq "$1" "tables.conf"
 then
@@ -32,23 +36,23 @@ else
   TABLE_NAME="samples"
   run_query "zip"
 
-  TABLE_NAME="network_details"
-  run_query
+  # TABLE_NAME="network_details"
+  # run_query
 
-  TABLE_NAME="battery_details"
-  run_query
+  # TABLE_NAME="battery_details"
+  # run_query
 
-  TABLE_NAME="storage_details"
-  run_query
+  # TABLE_NAME="storage_details"
+  # run_query
 
-  TABLE_NAME="cpu_statuses"
-  run_query
+  # TABLE_NAME="cpu_statuses"
+  # run_query
 
-  TABLE_NAME="settings"
-  run_query
+  # TABLE_NAME="settings"
+  # run_query
 
-  TABLE_NAME="app_processes"
-  run_query
+  # TABLE_NAME="app_processes"
+  # run_query
 fi
 
 echo "Unsetting .env file"
