@@ -87,7 +87,7 @@ function run_query {
   # Merge text part files into single text file
   echo "Merging temporary files"
   log_message "merging temporary files"
-  cat $(ls $CSV_REGEX) > "$CSV_FILE" && rm $(ls $CSV_REGEX)
+  cat $(ls -1v $CSV_REGEX) > "$CSV_FILE" && rm $(ls $CSV_REGEX)
 
   # Create a separate zip file if argument is passed
   if [ "$1" = "zip" ]; then
