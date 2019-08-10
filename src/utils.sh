@@ -46,7 +46,7 @@ function run_query {
   local CSV_FILE="$WORK_DIR/$TABLE_NAME.csv"
   local CSV_REGEX="$WORK_DIR/$TABLE_NAME.*.csv"
   local LOWER_BOUND=1
-  local UPPER_BOUND=$((LOWER_BOUND+BAG))
+  local UPPER_BOUND=$BAG
   local x=1
   
   echo -e "\n* Starting routine for [$TABLE_NAME]\n"
