@@ -62,6 +62,7 @@ function run_query {
 
   TOTAL=$(mysql -B -N -q --protocol=tcp -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD -P$DB_PORT $DB_DATABASE -e "SELECT MAX(id) FROM $TABLE_NAME $WHERE_CLAUSE")
   REF_ID=$TOTAL
+  UPPER_BOUND=$((UPPER_BOUND > REF_ID ? REF_ID : UPPER_BOUND))
 
   echo "Total of records: $TOTAL"
   log_message "total of records: $TOTAL"
@@ -82,7 +83,7 @@ function run_query {
       mysql -B -q --protocol=tcp -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD -P$DB_PORT $DB_DATABASE \
       -e "SELECT * FROM $TABLE_NAME WHERE id BETWEEN $LOWER_BOUND AND $UPPER_BOUND" \
       | tr '\t' ',' > "$WORK_DIR/$TABLE_NAME.$x.csv"
-      LOWER_BOUND=$((LOWER_BOUND+BAG))
+      LOWER_BOUND=$((UPPER_BOUND+1))
       UPPER_BOUND=$((UPPER_BOUND+BAG))
       UPPER_BOUND=$((UPPER_BOUND > REF_ID ? REF_ID : UPPER_BOUND))
       x=$((x+1))
