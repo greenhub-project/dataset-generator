@@ -22,7 +22,7 @@ $ bash scripts/run_build.sh
 # Export all tables
 $ bash scripts/run_generate.sh
 # If you want to run only for a single table, change the script as following:
-$ docker run --rm -it -v "$PWD/data":/app/data dataset-generator sh -c "./src/generate.sh samples"
+$ docker run --rm -it -v "$PWD":/app dataset-generator sh -c "./src/generate.sh samples"
 # Export database schema
 $ bash scripts/run_schema.sh
 ```
