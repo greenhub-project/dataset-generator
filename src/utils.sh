@@ -82,7 +82,7 @@ function run_query {
       log_message "<$TABLE_NAME> processing page ($x/$TOTAL) => rows $LOWER_BOUND:$UPPER_BOUND"
       mysql -B -q --protocol=tcp -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD -P$DB_PORT $DB_DATABASE \
       -e "SELECT * FROM $TABLE_NAME WHERE id BETWEEN $LOWER_BOUND AND $UPPER_BOUND" \
-      | tr '\t' ',' > "$WORK_DIR/$TABLE_NAME.$x.csv"
+      | tr '\t' ';' > "$WORK_DIR/$TABLE_NAME.$x.csv"
       LOWER_BOUND=$((UPPER_BOUND+1))
       UPPER_BOUND=$((UPPER_BOUND+BAG))
       UPPER_BOUND=$((UPPER_BOUND > REF_ID ? REF_ID : UPPER_BOUND))
