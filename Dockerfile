@@ -1,5 +1,8 @@
 FROM alpine:3.6
 
+LABEL Name=dataset-generator Version=0.0.1
+LABEL maintainer="Hugo Matalonga <dev@hmatalonga.com>"
+
 ARG USER=user
 ARG UID=1000
 ARG GID=1000
