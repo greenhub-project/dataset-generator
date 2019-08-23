@@ -20,4 +20,3 @@ services:
       - BAG=${BAG}
     volumes:
       - .:/home/user
-    network_mode: "bridge"
