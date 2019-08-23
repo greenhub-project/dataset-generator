@@ -3,4 +3,20 @@ version: '3'
 services:
   dataset-generator:
     image: dataset-generator
-    build: .
+    build:
+      context: .
+      args:
+        - UID=${UID}
+        - GID=${GID}
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - WORK_DIR=${WORK_DIR}
+      - SCRIPT=${SCRIPT}
+      - TABLE=${TABLE}
+      - BAG=${BAG}
+    volumes:
+      - .:/home/user

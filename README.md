@@ -9,22 +9,16 @@
 - [x] Separate 7z files for main dataset tables (devices, samples)
 - [x] .env file to store credentials
 - [x] Script logs
-- [x] Automatically creates a cronjob to execute
 - [x] Exports database schema
-- [x] Database configuration tuner
 - [x] Containerized setup
 
 ## Instructions
 
 ```shell
-# First build the custom docker image
-$ bash scripts/run_build.sh
-# Export all tables
-$ bash scripts/run_generate.sh
-# If you want to run only for a single table, change the script as following:
-$ docker run --rm -it -v "$PWD":/app dataset-generator sh -c "./src/generate.sh samples"
-# Export database schema
-$ bash scripts/run_schema.sh
+# Run the application in the background
+$ docker-compose up -d
+# Display the logs
+$ docker-compose logs
 ```
 
 ## Script Configuration

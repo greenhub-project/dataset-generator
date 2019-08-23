@@ -2,19 +2,7 @@
 
 . ./src/utils.sh
 
-if [ ! -f ".env" ]; then
-  echo ".env file not found!"
-  log_message ".env file not found!"
-  copy_env_file
-  exit 0
-fi
-
-export_vars
-
 log_message "starting job"
-
-echo "Loading .env file"
-log_message "loading .env file"
 
 echo "Bag size set to = $BAG"
 log_message "bag size set to = $BAG"
@@ -54,10 +42,6 @@ else
   TABLE_NAME="app_processes"
   run_query
 fi
-
-echo "Unsetting .env file"
-log_message "unsetting .env file variables"
-unset_vars
 
 echo "Done!"
 log_message "job done!"

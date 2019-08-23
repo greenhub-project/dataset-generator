@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+docker-compose down
+docker rmi dataset-generator:latest
+SCRIPT=schema docker-compose up

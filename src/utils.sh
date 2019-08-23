@@ -31,11 +31,12 @@ function get_last_id {
 
 # Exports database schema to a .sql file
 function export_schema {
-  local SCHEMA_FILE="$WORK_DIR/schema.sql.gz"
+  local SCHEMA_FILE="$WORK_DIR/schema.sql"
   echo "Exporting database schema"
   log_message "exporting database schema"
-  mysqldump --protocol=tcp --no-data -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD \
-  -P$DB_PORT  $DB_DATABASE > "$SCHEMA_FILE"
+  mysqldump --single-transaction --protocol=tcp --no-data -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD \
+  -P$DB_PORT $DB_DATABASE > "$SCHEMA_FILE"
+  7z a -t7z -sdel -- "$WORK_DIR/schema.7z" "$SCHEMA_FILE"
 }
 
 # Routine to query a table into a csv file
