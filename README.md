@@ -41,7 +41,7 @@ This options sets which script is executed, `generate` will export the tables to
 #### TABLE
 
 Type: `string`<br>
-Values: See the file `tables.conf` for available tables<br>
+Values: See the file `tables.conf` for valid options. Empty value will export all tables.<br>
 Default: `''`
 
 ## Script Configuration
