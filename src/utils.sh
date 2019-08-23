@@ -43,7 +43,7 @@ function run_query {
   # Set files path
   local SEARCH_KEY="id"
   local WHERE_CLAUSE=""
-  local INCLUDE_HEADERS="-N"
+  local SKIP_HEADERS=""
   local CSV_FILE="$WORK_DIR/$TABLE_NAME.csv"
   local CSV_REGEX="$WORK_DIR/$TABLE_NAME.*.csv"
   local LOWER_BOUND=1
@@ -83,10 +83,10 @@ function run_query {
       log_message "<$TABLE_NAME> processing page ($x/$TOTAL) => rows $LOWER_BOUND:$UPPER_BOUND"
 
       if [ "$x" -gt "1" ]; then
-        INCLUDE_HEADERS=""
+        SKIP_HEADERS="-N"
       fi
 
-      mysql -B $INCLUDE_HEADERS -q --protocol=tcp -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD -P$DB_PORT $DB_DATABASE \
+      mysql -B $SKIP_HEADERS -q --protocol=tcp -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD -P$DB_PORT $DB_DATABASE \
       -e "SELECT * FROM $TABLE_NAME WHERE id BETWEEN $LOWER_BOUND AND $UPPER_BOUND" \
       | tr '\t' ';' > "$WORK_DIR/$TABLE_NAME.$x.csv"
 
