@@ -12,6 +12,11 @@
 - [x] Exports database schema
 - [x] Containerized setup
 
+## Requirements
+
+- [Docker](https://www.docker.com/get-started)
+- [Docker Compose](https://docs.docker.com/compose/install/)
+
 ## Instructions
 
 ```shell
