@@ -20,13 +20,33 @@
 ## Instructions
 
 ```shell
+# First set the credentials and env variables
+$ cp .env.example .env
 # Run the application in the background
 $ docker-compose up -d
 # Display the logs
 $ docker-compose logs
 ```
 
+### Options
+
+#### SCRIPT
+
+Type: `string`<br>
+Values: `generate`, `schema`<br>
+Default: `generate`
+
+This options sets which script is executed, `generate` will export the tables to a .csv file while `schema` exports the database schema to a .sql file. All files are compressed to 7z files.
+
+#### TABLE
+
+Type: `string`<br>
+Values: See the file `tables.conf` for available tables<br>
+Default: `''`
+
 ## Script Configuration
+
+It is possible to make some tweaks in the script file to control the generation of additional dataset files.
 
 ```bash
 # First, set the table name
