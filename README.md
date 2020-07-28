@@ -33,7 +33,7 @@ $ docker-compose logs
 #### SCRIPT
 
 Type: `string`<br>
-Values: `generate`, `schema`<br>
+Values: `generate`, `schema`, `query`<br>
 Default: `generate`
 
 This options sets which script is executed, `generate` will export the tables to a .csv file while `schema` exports the database schema to a .sql file. All files are compressed to 7z files.
