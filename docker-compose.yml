@@ -16,6 +16,7 @@ services:
       - DB_PASSWORD=${DB_PASSWORD}
       - WORK_DIR=${WORK_DIR}
       - SCRIPT=${SCRIPT}
+      - SQL_SCRIPT=${SQL_SCRIPT}
       - TABLE=${TABLE}
       - BAG=${BAG}
     volumes:

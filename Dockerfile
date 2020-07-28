@@ -1,6 +1,6 @@
 FROM alpine:3.6
 
-LABEL Name=dataset-generator Version=0.0.1
+LABEL Name=dataset-generator Version=0.1.0
 LABEL maintainer="Hugo Matalonga <dev@hmatalonga.com>"
 
 ARG USER=user

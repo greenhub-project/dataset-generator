@@ -124,6 +124,82 @@ function run_query {
   7z a -t7z -sdel -m0=LZMA2:d64k:fb32 -ms=8m -mmt=30 -mx=1 -- "$WORK_DIR/dataset.7z" "$CSV_FILE"
 }
 
+# Routine to query a table into a csv file
+function run_join_query {
+  # Set files path
+  local SQL_QUERY="$1"
+  local SEARCH_KEY="id"
+  local WHERE_CLAUSE=""
+  local ORDER_CLAUSE="ORDER BY id"
+  local SKIP_HEADERS=""
+  local CSV_FILE="$WORK_DIR/query.csv"
+  local CSV_REGEX="$WORK_DIR/query.*.csv"
+  local LOWER_BOUND=1
+  local UPPER_BOUND=$BAG
+  local x=1
+  
+  echo -e "\n* Starting routine for [$SQL_SCRIPT]\n"
+  log_message "starting routine for $SQL_SCRIPT"
+
+  if [ -n "$LAST_ID" ]; then
+    log_message "setting where clause"
+    WHERE_CLAUSE="WHERE $SEARCH_KEY <= $LAST_ID"
+  fi
+
+  TOTAL=$(mysql -B -N -q --protocol=tcp -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD -P$DB_PORT $DB_DATABASE -e "SELECT MAX(id) FROM $TABLE_NAME $WHERE_CLAUSE")
+  REF_ID=$TOTAL
+  UPPER_BOUND=$((UPPER_BOUND > REF_ID ? REF_ID : UPPER_BOUND))
+
+  echo "Total of records: $TOTAL"
+  log_message "total of records: $TOTAL"
+
+  TOTAL=$((TOTAL/BAG+1))
+  TOTAL=5
+
+  echo "Total of pages: $TOTAL"
+  log_message "total number of pages: $TOTAL"
+
+  # Query table into txt file
+  echo "Running query for records"
+  log_message "running query for records"
+
+  while [ "$x" -le "$TOTAL" ]
+    do
+      echo "<$SQL_SCRIPT> processing page ($x/$TOTAL)"
+      log_message "<$SQL_SCRIPT> processing page ($x/$TOTAL) => rows $LOWER_BOUND:$UPPER_BOUND"
+
+      if [ "$x" -gt "1" ]; then
+        SKIP_HEADERS="-N"
+      fi
+
+      mysql -B $SKIP_HEADERS -q --protocol=tcp -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD -P$DB_PORT $DB_DATABASE \
+      -e "$SQL_QUERY AND (s.id BETWEEN $LOWER_BOUND AND $UPPER_BOUND)" \
+      | tr '\t' ';' > "$WORK_DIR/query.$x.csv"
+
+      LOWER_BOUND=$((UPPER_BOUND+1))
+      UPPER_BOUND=$((UPPER_BOUND+BAG))
+      UPPER_BOUND=$((UPPER_BOUND > REF_ID ? REF_ID : UPPER_BOUND))
+      x=$((x+1))
+    done
+
+  # Merge text part files into single text file
+  echo "Merging temporary files"
+  log_message "merging temporary files"
+  cat $(ls -1v $CSV_REGEX) > "$CSV_FILE" && rm $(ls $CSV_REGEX)
+
+  # Create a separate zip file if argument is passed
+  if [ "$2" = "zip" ]; then
+    echo "Compressing to separate $TABLE_NAME.7z file"
+    log_message "compressing to separate $TABLE_NAME.7z file"
+    # zip -rj "$WORK_DIR/$TABLE_NAME.zip" "$CSV_FILE"
+    7z a -t7z -m0=LZMA2:d64k:fb32 -ms=8m -mmt=30 -mx=1 -- "$WORK_DIR/$TABLE_NAME.7z" "$CSV_FILE"
+  fi
+
+  echo "Compressing and appending to dataset.7z file"
+  log_message "appending $CSV_FILE to dataset.7z file"
+  7z a -t7z -sdel -m0=LZMA2:d64k:fb32 -ms=8m -mmt=30 -mx=1 -- "$WORK_DIR/dataset.7z" "$CSV_FILE"
+}
+
 # Logs a message to a file
 function log_message {
   local LOG_FILE="$WORK_DIR/dataset-generator.log"
