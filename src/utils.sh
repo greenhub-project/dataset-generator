@@ -187,14 +187,6 @@ function run_join_query {
   log_message "merging temporary files"
   cat $(ls -1v $CSV_REGEX) > "$CSV_FILE" && rm $(ls $CSV_REGEX)
 
-  # Create a separate zip file if argument is passed
-  if [ "$2" = "zip" ]; then
-    echo "Compressing to separate $TABLE_NAME.7z file"
-    log_message "compressing to separate $TABLE_NAME.7z file"
-    # zip -rj "$WORK_DIR/$TABLE_NAME.zip" "$CSV_FILE"
-    7z a -t7z -m0=LZMA2:d64k:fb32 -ms=8m -mmt=30 -mx=1 -- "$WORK_DIR/$TABLE_NAME.7z" "$CSV_FILE"
-  fi
-
   echo "Compressing and appending to dataset.7z file"
   log_message "appending $CSV_FILE to dataset.7z file"
   7z a -t7z -sdel -m0=LZMA2:d64k:fb32 -ms=8m -mmt=30 -mx=1 -- "$WORK_DIR/dataset.7z" "$CSV_FILE"
