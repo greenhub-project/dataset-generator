@@ -22,9 +22,9 @@ function unset_vars {
   unset $(grep -v '^#' .env | sed -E 's/(.*)=.*/\1/' | xargs)
 }
 
-# Returns the last ID of samples table
+# Returns the last ID of table
 function get_last_id {
-  local QUERY="SELECT MAX(id) FROM samples"
+  local QUERY="SELECT MAX(id) FROM $1"
   LAST_ID=$(mysql -B -N --protocol=tcp -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD -P$DB_PORT $DB_DATABASE -e "$QUERY")
   log_message "last ID set to = $LAST_ID"
 }
@@ -130,10 +130,9 @@ function run_join_query {
   local SQL_QUERY="$1"
   local SEARCH_KEY="id"
   local WHERE_CLAUSE=""
-  local ORDER_CLAUSE="ORDER BY id"
   local SKIP_HEADERS=""
-  local CSV_FILE="$WORK_DIR/query.csv"
-  local CSV_REGEX="$WORK_DIR/query.*.csv"
+  local CSV_FILE="$WORK_DIR/$TABLE_NAME.query.csv"
+  local CSV_REGEX="$WORK_DIR/$TABLE_NAME.query.*.csv"
   local LOWER_BOUND=1
   local UPPER_BOUND=$BAG
   local x=1
@@ -154,7 +153,6 @@ function run_join_query {
   log_message "total of records: $TOTAL"
 
   TOTAL=$((TOTAL/BAG+1))
-  TOTAL=5
 
   echo "Total of pages: $TOTAL"
   log_message "total number of pages: $TOTAL"
@@ -172,9 +170,13 @@ function run_join_query {
         SKIP_HEADERS="-N"
       fi
 
+      SQL_STATEMENT="$SQL_QUERY WHERE id BETWEEN $LOWER_BOUND AND $UPPER_BOUND"
+      if [ "$SQL_QUERY" == *"WHERE"* ]; then
+        SQL_STATEMENT="$SQL_QUERY AND id BETWEEN $LOWER_BOUND AND $UPPER_BOUND"
+      fi
+
       mysql -B $SKIP_HEADERS -q --protocol=tcp -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD -P$DB_PORT $DB_DATABASE \
-      -e "$SQL_QUERY AND (s.id BETWEEN $LOWER_BOUND AND $UPPER_BOUND)" \
-      | tr '\t' ';' > "$WORK_DIR/query.$x.csv"
+      -e "$SQL_STATEMENT" | tr '\t' ';' > "$WORK_DIR/$TABLE_NAME.query.$x.csv"
 
       LOWER_BOUND=$((UPPER_BOUND+1))
       UPPER_BOUND=$((UPPER_BOUND+BAG))
@@ -182,14 +184,9 @@ function run_join_query {
       x=$((x+1))
     done
 
-  # Merge text part files into single text file
-  echo "Merging temporary files"
-  log_message "merging temporary files"
-  cat $(ls -1v $CSV_REGEX) > "$CSV_FILE" && rm $(ls $CSV_REGEX)
-
   echo "Compressing and appending to dataset.7z file"
-  log_message "appending $CSV_FILE to dataset.7z file"
-  7z a -t7z -sdel -m0=LZMA2:d64k:fb32 -ms=8m -mmt=30 -mx=1 -- "$WORK_DIR/dataset.7z" "$CSV_FILE"
+  log_message "appending $CSV_REGEX files to dataset.7z file"
+  7z a -t7z -sdel -m0=LZMA2:d64k:fb32 -ms=8m -mmt=30 -mx=1 -- "$WORK_DIR/dataset-$TABLE_NAME.7z" $(ls -1v $CSV_REGEX)
 }
 
 # Logs a message to a file

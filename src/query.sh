@@ -4,9 +4,11 @@
 
 SQL=$(cat scripts/$SQL_SCRIPT)
 
-get_last_id
+TABLE_NAME="$TABLE"
+ORDER_CLAUSE="ORDER BY id"
 
-TABLE_NAME="samples"
+get_last_id "$TABLE_NAME"
+
 run_join_query "$SQL"
 
 echo "Done!"

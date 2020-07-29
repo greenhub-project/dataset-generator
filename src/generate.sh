@@ -19,7 +19,7 @@ else
   TABLE_NAME="devices"
   run_query "zip"
 
-  get_last_id
+  get_last_id "samples"
 
   TABLE_NAME="samples"
   run_query "zip"
