@@ -7,7 +7,7 @@ SQL=$(cat scripts/$SQL_SCRIPT)
 TABLE_NAME="$TABLE"
 ORDER_CLAUSE="ORDER BY id"
 
-get_last_id "$TABLE_NAME"
+get_last_id
 
 run_join_query "$SQL"
 

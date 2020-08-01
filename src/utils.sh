@@ -24,7 +24,7 @@ function unset_vars {
 
 # Returns the last ID of table
 function get_last_id {
-  local QUERY="SELECT MAX(id) FROM $1"
+  local QUERY="SELECT MAX(id) FROM $TABLE_NAME"
   LAST_ID=$(mysql -B -N --protocol=tcp -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD -P$DB_PORT $DB_DATABASE -e "$QUERY")
   log_message "last ID set to = $LAST_ID"
 }
@@ -166,16 +166,12 @@ function run_join_query {
       echo "<$SQL_SCRIPT> processing page ($x/$TOTAL)"
       log_message "<$SQL_SCRIPT> processing page ($x/$TOTAL) => rows $LOWER_BOUND:$UPPER_BOUND"
 
-      if [ "$x" -gt "1" ]; then
-        SKIP_HEADERS="-N"
-      fi
-
-      SQL_STATEMENT="$SQL_QUERY WHERE id BETWEEN $LOWER_BOUND AND $UPPER_BOUND"
+      SQL_STATEMENT="$SQL_QUERY WHERE id BETWEEN $LOWER_BOUND AND $UPPER_BOUND $ORDER_CLAUSE"
       if [ "$SQL_QUERY" == *"WHERE"* ]; then
-        SQL_STATEMENT="$SQL_QUERY AND id BETWEEN $LOWER_BOUND AND $UPPER_BOUND"
+        SQL_STATEMENT="$SQL_QUERY AND id BETWEEN $LOWER_BOUND AND $UPPER_BOUND $ORDER_CLAUSE"
       fi
 
-      mysql -B $SKIP_HEADERS -q --protocol=tcp -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD -P$DB_PORT $DB_DATABASE \
+      mysql -B -q --protocol=tcp -h$DB_HOST -u$DB_USERNAME -p$DB_PASSWORD -P$DB_PORT $DB_DATABASE \
       -e "$SQL_STATEMENT" | tr '\t' ';' > "$WORK_DIR/$TABLE_NAME.query.$x.csv"
 
       LOWER_BOUND=$((UPPER_BOUND+1))
@@ -184,8 +180,8 @@ function run_join_query {
       x=$((x+1))
     done
 
-  echo "Compressing and appending to dataset.7z file"
-  log_message "appending $CSV_REGEX files to dataset.7z file"
+  echo "Compressing and appending to dataset-$TABLE_NAME.7z file"
+  log_message "appending $CSV_REGEX files to dataset-$TABLE_NAME.7z file"
   7z a -t7z -sdel -m0=LZMA2:d64k:fb32 -ms=8m -mmt=30 -mx=1 -- "$WORK_DIR/dataset-$TABLE_NAME.7z" $(ls -1v $CSV_REGEX)
 }
 
